@@ -8,6 +8,7 @@ from io import BytesIO
 import json
 import tkinter as tk
 from tkinter import ttk, scrolledtext
+import pyperclip
 
 # Load environment variables from .env file
 load_dotenv()
@@ -55,7 +56,11 @@ systemPrompt = '''
 '''
 
 def typeText(text):
-    pyautogui.write(text)
+    pyperclip.copy(text)
+    pyautogui.hotkey('ctrl', 'v')
+    time.sleep(0.1)
+    pyperclip.copy('')
+    #pyautogui.write(text)
 
 def displayResponse(text):
     print(text)
@@ -76,21 +81,58 @@ class AssistantGUI:
         self.root = root
         self.root.title("Gerald")
         self.root.geometry("600x400")
-
-        # Create main frame
-        main_frame = ttk.Frame(root, padding="10")
+        
+        # Configure dark theme colors
+        self.root.configure(bg='#1a1a1a')  # Dark background
+        
+        style = ttk.Style()
+        style.configure("Custom.TFrame", background="#212121")
+        style.configure("Custom.TButton", 
+                       padding=10,
+                       font=('Helvetica', 10),
+                       background="#000000",  # Dark button color
+                       foreground="#000000")  # White text
+        
+        main_frame = ttk.Frame(root, padding="20", style="Custom.TFrame")
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
-        # Create and configure chat display
-        self.chat_display = scrolledtext.ScrolledText(main_frame, wrap=tk.WORD, height=15)
-        self.chat_display.grid(row=0, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S))
+        # Chat display with dark theme
+        self.chat_display = scrolledtext.ScrolledText(
+            main_frame,
+            wrap=tk.WORD,
+            height=15,
+            font=('Helvetica', 11),
+            bg='#2f2f2f',  # Dark gray background
+            fg='#ffffff',  # White text
+            padx=10,
+            pady=10,
+            borderwidth=1,
+            relief="solid"
+        )
+        self.chat_display.grid(row=0, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 15))
 
-        # Create input field
-        self.input_field = ttk.Entry(main_frame, width=50)
-        self.input_field.grid(row=1, column=0, sticky=(tk.W, tk.E))
+        # Input field with dark theme
+        self.input_field = ttk.Entry(
+            main_frame,
+            width=50,
+            font=('Helvetica', 11),
+            style="Custom.TEntry"
+        )
+        # Configure dark theme for input field
+        style.configure("Custom.TEntry",
+                       fieldbackground="#000000",
+                       foreground="#000000",
+                       insertcolor="#000000")  # Cursor color
+        
+        self.input_field.grid(row=1, column=0, sticky=(tk.W, tk.E), padx=(0, 10), pady=10)
 
-        # Create send button
-        send_button = ttk.Button(main_frame, text="Send", command=self.process_input)
+        # Send button with matching theme
+        send_button = ttk.Button(
+            main_frame,
+            text="Send",
+            command=self.process_input,
+            style="Custom.TButton"
+        )
         send_button.grid(row=1, column=1, sticky=(tk.E))
 
         # Configure grid weights
