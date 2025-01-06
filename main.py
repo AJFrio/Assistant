@@ -9,6 +9,7 @@ import json
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 import pyperclip
+import functions as f
 
 # Load environment variables from .env file
 load_dotenv()
