@@ -10,48 +10,42 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext
 import pyperclip
 import functions as f
+from funcList import funclist
 
 # Load environment variables from .env file
 load_dotenv()
 
-tools = [
-    {
-        "type": "function",
-        "function": {
-            "name": "typeText",
-            "description": "Used to type out text as an alternative to the keyboard",
-            "parameters": {
-                "type": "object", 
-                "properties": {
-                    "text": {
-                        "type": "string", 
-                        "description": "The text to type out"
-                    }
-                }, 
-                "required": ["text"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "displayResponse",
-            "description": "Used to display a response to the user",
-            "parameters": {
-                "type": "object", "properties": {"text": {"type": "string", "description": "The text to display"}}, "required": ["text"]}
-        }
-    }
-]
+tools = funclist
 
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 systemPrompt = '''
-    You are virtual assistant used to help speed up typing related jobs and anwser questions about on screen content. You will be given as task along with an image for context. 
+    You are virtual assistant developed by AJ used to help complete work tasks. IF required you will be given an image to help add context. 
+    \n
 
-    If you are given a chat between two people, only respond with what you think the proper resonse to the chat would be. Keep responses short and direct.
-    If you are given a document, respond with what the task directed you to do based off the context of the file.
+    AJ is a web developer 1 at REP Fitness that specializes in web based 3D models.
+    Here are a list of AJs general day to day tasks and tools he uses.
+    \n
 
-    In every response, you have to call one of the two tools.
+    Tasks:
+    -Convert to CAD to web friendly format
+    -Updates webpage with new 3D models
+    -Other website related development tasks
+    -Rendering 3D models for use in marketing materials
+    \n
+
+    Tools:
+    -Bild PDM
+    -Blender
+    -Solidworks
+    -Cursor: VS Code based IDE with AI builtin
+    \n
+
+    You will be given a set of tools to use to complete the task. Only use a tool if it is apporpriate for the requested task
+    \n
+
+    Keep all responses short and direct. Sound friendly, but not cheerful. Responses should be very monotone
+    \n
 
     Respond only with the proper response for the situation.
 '''
@@ -145,7 +139,7 @@ class AssistantGUI:
         # Bind enter key to process_input
         self.input_field.bind("<Return>", lambda e: self.process_input())
 
-        self.display_message("Assistant: Hello! How can I help you today?")
+        self.display_message("Gerald: Hello")
 
     def display_message(self, message):
         self.chat_display.insert(tk.END, message + "\n")
@@ -158,32 +152,55 @@ class AssistantGUI:
 
         self.display_message(f"You: {user_input}")
         self.input_field.delete(0, tk.END)
+        
+        self.display_message("Gerald: Generating...")
+        self.root.update()
+
+        # Check if image is needed based on keywords
+        image_keywords = ['screen', 'see', 'look', 'show', 'image', 'pic', 'read', 'document', 'chat', 'ask', ]
+        needs_image = any(keyword in user_input.lower() for keyword in image_keywords)
+        if needs_image:
+            print("Image needed")
+        else:
+            print("No image needed")
+
+        # Prepare messages
+        messages = [
+            {"role": "system", "content": systemPrompt},
+            {"role": "user", "content": user_input if not needs_image else [
+                {"type": "text", "text": user_input},
+                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{getImage()}"}}
+            ]}
+        ]
 
         # Process with OpenAI
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": systemPrompt},
-                {"role": "user", 
-                "content": [
-                    {"type": "text", "text": user_input},
-                    {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{getImage()}"}}
-                ]}
-            ],
+            messages=messages,
             tools=tools
         )
 
+        # Remove the "Generating..." message
+        self.chat_display.delete('end-2c linestart', 'end-1c lineend+1c')
+        
+        # Process response (rest of the code remains the same)
         if not response.choices[0].message.content:
             tool_call = response.choices[0].message.tool_calls[0]
             args = json.loads(tool_call.function.arguments)
-            if tool_call.function.name == "typeText":
-                typeText(args['text'])
-                self.display_message(f"Assistant: (Typed: {args['text']})")
-            else:
-                displayResponse(args['text'])
-                self.display_message(f"Assistant: {args['text']}")
+            if tool_call.function.name == "send_message":
+                f.send_message(args['message'], args['person'])
+                self.display_message(f"\nGerald: Message to {args['person']}: {args['message']}")
+            elif tool_call.function.name == "open_app":
+                f.focus_application(args['app_name'])
+                self.display_message(f"\nGerald: Opened {args['app_name']}")
+            elif tool_call.function.name == "read_email":
+                emails = f.read_email()
+                self.display_message(f"\nGerald: {emails}")
+            elif tool_call.function.name == "get_info":
+                info = f.get_info(args['input'])
+                self.display_message(f"\nGerald: {info}")
         else:
-            self.display_message(f"Assistant: {response.choices[0].message.content}")
+            self.display_message(f"\nGerald: {response.choices[0].message.content}")
 
 def main():
     root = tk.Tk()

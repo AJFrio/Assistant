@@ -1,0 +1,281 @@
+Microsoft 365 security: You have messages in quarantine
+Q
+quarantine@messaging.microsoft.com
+
+To:
+AJ Frio
+Fri 1/10/2025 2:53 PM
+Review These Messages
+4 messages are being held for you to review as of 1/10/2025 9:22:03 PM (UTC).
+Review them within 30 days of the received date by going to the Quarantine page in the Security Center.
+Prevented phish messages
+Sender: jira@rep-it.atlassian.net    
+Subject: [JIRA] (REP-146) Hyperion    
+Date: 1/10/2025 5:10:25 PM    
+Review Message Release
+        Sender: jira@rep-it.atlassian.net    
+Subject: [JIRA] (REP-143) Omni Migrate to New Builder    
+Date: 1/10/2025 5:10:26 PM    
+Review Message Release
+        Sender: jira@rep-it.atlassian.net    
+Subject: [JIRA] Brian Poteet assigned REP-133 to you    
+Date: 1/10/2025 5:23:37 PM    
+Review Message Release
+        Sender: jira@rep-it.atlassian.net    
+Subject: [JIRA] (REP-1) Reduce 3D file sizes    
+Date: 1/10/2025 5:26:14 PM    
+Review Message Release
+        © 2025 Microsoft Corporation. All rights reserved.
+Privacy Statement
+Acceptable Use Policy
+
+Reply
+
+Forward
+
+---
+
+A new device has logged in to your Shopify account
+S
+Shopify<mailer@shopify.com>
+
+
+To:
+AJ Frio
+Fri 1/10/2025 2:23 PM
+You don't often get email from mailer@shopify.com. Learn why this is important
+Hi Alexander Frio
+
+It looks like you signed into your account from a new device.
+
+Device: Chrome 131 on Windows 10
+Location: United States
+IP address: 161.97.195.193
+
+If this wasn't you, let us know.
+Check activity
+151 O'Connor Street, Ground floor, Ottawa, ON, K2P 2L8
+
+Reply
+
+Forward
+
+---
+
+[JIRA] (REP-133) Builder - Texture/Lighting on Racks
+B
+BritniS (Jira)<jira@rep-it.atlassian.net>
+
+
+To:
+
+AJ Frio
+Fri 1/10/2025 1:29 PM
+BritniS made 1 update.
+RepFitness.com
+  /  
+REP-133
+Builder - Texture/Lighting on Racks
+BritniS 1:26 PM MST
+Description:
+Builders are too dark and random bugs with images like bolt colors. Compare to 3kit and image brightness has reduced significantly and hides detail. Also can use Rogue’s builder as a point of reference for lighting.
+  View issue
+
+Open the issue to view attachments over 100KB.
+Get Jira notifications on your phone! Download the Jira Cloud app for Android or iOS.
+  Manage notifications  •  Give feedback  •  Privacy policy
+  
+Reply
+
+Forward
+
+---
+
+Don’t Be a Quitter
+RF
+REP Fitness
+
+
+
+
+
+To:
+
+AJ Frio
+Fri 1/10/2025 12:30 PM
+© REP Fitness LLC 
+You are getting this communication because you signed up on our website or during the check-out process.
+Want to change how you receive these emails?
+Manage Preferences or Unsubscribe
+
+Having trouble seeing this email?
+View in Browser
+
+Reply
+
+Forward
+
+---
+
+[JIRA] (REP-146) Hyperion
+BP
+Brian Poteet (Jira)<jira@rep-it.atlassian.net>
+
+
+To:
+
+AJ Frio
+Fri 1/10/2025 10:49 AM
+jira@rep-it.atlassian.net appears similar to someone who previously sent you email, but may not be that person. Learn why this could be a risk
+Brian Poteet made 1 update.
+RepFitness.com
+  /  
+REP-146
+Hyperion
+Brian Poteet 10:07 AM MST
+Sprint: REP Sprint 1
+  View issue
+
+Open the issue to view attachments over 100KB.
+Get Jira notifications on your phone! Download the Jira Cloud app for Android or iOS.
+  Manage notifications  •  Give feedback  •  Privacy policy
+  
+Reply
+
+Forward
+
+---
+
+[JIRA] (REP-143) Omni Migrate to New Builder
+BP
+Brian Poteet (Jira)<jira@rep-it.atlassian.net>
+
+
+To:
+
+AJ Frio
+Fri 1/10/2025 10:49 AM
+
+Some content in this message has been blocked because the sender isn't in your Safe senders list.
+Trust sender
+Show blocked content
+jira@rep-it.atlassian.net appears similar to someone who previously sent you email, but may not be that person. Learn why this could be a risk
+Brian Poteet made 1 update.
+RepFitness.com
+  /  
+REP-143
+Omni Migrate to New Builder
+Brian Poteet 10:07 AM MST
+Sprint: REP Sprint 1
+  View issue
+
+Open the issue to view attachments over 100KB.
+Get Jira notifications on your phone! Download the Jira Cloud app for Android or iOS.
+  Manage notifications  •  Give feedback  •  Privacy policy
+  
+Reply
+
+Forward
+
+---
+
+[JIRA] Brian Poteet assigned REP-133 to you
+BP
+Brian Poteet (Jira)<jira@rep-it.atlassian.net>
+
+
+To:
+
+AJ Frio
+Fri 1/10/2025 10:49 AM
+
+Some content in this message has been blocked because the sender isn't in your Safe senders list.
+Trust sender
+Show blocked content
+jira@rep-it.atlassian.net appears similar to someone who previously sent you email, but may not be that person. Learn why this could be a risk
+Brian Poteet assigned this issue to you
+RepFitness.com
+  /  
+REP-133
+Builder - Texture/Lighting on Racks
+Brian Poteet 10:23 AM MST
+Assignee: Unassigned AJ Frio
+  View issue
+
+Open the issue to view attachments over 100KB.
+Get Jira notifications on your phone! Download the Jira Cloud app for Android or iOS.
+  Manage notifications  •  Give feedback  •  Privacy policy
+  
+Reply
+
+Forward
+
+---
+
+[JIRA] (REP-1) Reduce 3D file sizes
+BP
+Brian Poteet (Jira)<jira@rep-it.atlassian.net>
+
+
+To:
+
+AJ Frio
+Fri 1/10/2025 10:49 AM
+jira@rep-it.atlassian.net appears similar to someone who previously sent you email, but may not be that person. Learn why this could be a risk
+Brian Poteet made 1 update.
+RepFitness.com
+  /  
+REP-1
+Reduce 3D file sizes
+Brian Poteet 10:23 AM MST
+Sprint: REP Sprint 1
+  View issue
+
+Open the issue to view attachments over 100KB.
+Get Jira notifications on your phone! Download the Jira Cloud app for Android or iOS.
+  Manage notifications  •  Give feedback  •  Privacy policy
+  
+Reply
+
+Forward
+
+---
+
+Weekly Tech Communication - How to Report Suspected Spam/Phishing Emails
+
+
+New Out...tions.pdf
+Classic...s.pdf.pdf
+ML
+Michael Lazar
+
+
+
+
+To:
+Allemployees
+Fri 1/10/2025 10:16 AM
+New Outlook - Report Phishing Instructions.pdf
+422 KB
+
+
+Show all 2 attachments (1 MB)
+
+Save all to OneDrive - Rep Fitness
+
+Download all
+Hi Team,
+If you suspect an email to be Phishing, Spam, or Dangerous, please immediately report this email as Spam/Phishing. This is very important not only for your personal mailbox safety, but the entire organizations mailbox safety. As one report can cause Microsoft to re-analyze the entire Org's mailboxes and remove malicious messages that made it through.
+Here are some instruction on how to report these emails:
+Right click on any message in your Inbox, and hit Report > Phishing/Spam.
+For more detailed instructions (for both the classic outlook and New outlook), you can access those here (attached):
+
+
+Reply
+
+Reply all
+
+Forward
+
+---
+

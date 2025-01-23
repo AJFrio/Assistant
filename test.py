@@ -1,6 +1,4 @@
-import pyautogui as pg
-import functions as f
+import pyautogui
 
-f.select_chatbox()
-
-pg.write("Hello")
+print(pyautogui.size())
+print(pyautogui.position())
