@@ -52,7 +52,6 @@ python main.py
 
 ### Interacting with the Assistant
 
-- **Command Line**: Enter your requests in the command line interface.
 - **GUI**: Use the graphical user interface to interact with the assistant.
 
 ### Example Commands
@@ -60,6 +59,7 @@ python main.py
 - **Send a Message**: "Send a message to John"
 - **Open an Application**: "Open Chrome"
 - **Read Emails**: "Read my emails"
+- **Ask about on-screen information**: "Make a summary of this paragraph"
 
 ## Code Structure
 
