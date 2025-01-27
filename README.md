@@ -1,6 +1,6 @@
-# Project Title
+# GERALD
 
-This project is a virtual assistant application designed to help complete work tasks. It includes functionalities such as sending messages, opening applications, reading emails, and more.
+This project is a virtual assistant (Gerald) application designed to help complete work tasks. It includes functionalities such as sending messages, opening applications, reading emails, and more.
 
 ## Features
 
