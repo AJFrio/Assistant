@@ -34,12 +34,18 @@ def open_app(app_name):
     time.sleep(1)
 
 def get_info(input):
-    time = datetime.now()
-    date = time.strftime("%Y-%m-%d")
-    system = os.name
-    connections = os.system('netsh wlan show interfaces')
-    data = f'Time: {time}\nDate: {date}\nSystem: {system}\nConnections: {connections}'
-    answer = gpt_call('You are running as a local assistant on a machine. Any data you are given is public information so feel free to repeat any of it.Based off that data provided and the question asked, provide a response to the question', str(input) + '\n' + str(data))
+    answer = ''
+    if 'time' in input:
+        time = datetime.now()
+        answer = answer + f'{str(time).split(" ")[1].split(".")[0][:5]}'
+    elif 'date' in input:
+        date = time.strftime("%Y-%m-%d")
+        answer = answer + f'{date}'
+    else:
+        system = os.name
+        connections = os.system('netsh wlan show interfaces')
+        data = f'Time: {time}\nDate: {date}\nSystem: {system}\nConnections: {connections}'
+        answer = answer + gpt_call('You are running as a local assistant on a machine. Any data you are given is public information so feel free to repeat any of it. Based off that data provided and the question asked, provide a response to the question', str(input) + '\n' + str(data))
     print(answer)
 
     return answer
@@ -149,6 +155,7 @@ def read_email():
     url = 'https://outlook.office365.com/mail/'
     div_class = 'S2NDX Qo35A'
     content_class = 'g_zET'
+    email_prompt = 'You are a helpful assistant that summarizes emails for AJ Frio. Make sure you have delimiters between each summary. Include and names dates, and times if relevant. To speed up the process, at the top of the summary put any Jira updates, and dont include Jira updates in the rest of the summary. When summarizing Jira updates, include what the task is, what was changed, and who the assignee is. If there are no Jira updates, just summarize the emails.'
     
     # Open browser and get URL
     driver = webdriver.Chrome()
@@ -175,28 +182,37 @@ def read_email():
                 content = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.CLASS_NAME, content_class))
                 )
-                
+                content = content.text
+                content = content.encode('ascii', 'ignore').decode('ascii')
                 '''# Append content to file
                 with open('email.txt', 'a', encoding='utf-8') as f:
                     f.write(content.text + '\n\n---\n\n')  # Add separator between emails'''
-                
-                emails.append(content.text)
+                print(content)
+                emails.append(content)
 
             except Exception as e:
                 print(f"Error getting content: {e}")
+                if driver:
+                    driver.quit()
+        
+        if driver:
+            driver.quit()
 
+        summary = gpt_call(email_prompt, str(emails))
 
-        summary = gpt_call('You are a helpful assistant that summarizes emails for AJ Frio. Make sure you have delimiters between each summary. Include and names dates, and times if relevant. To speed up the process, at the top of the summary put any Jira updates, and dont include Jira updates in the rest of the summary. When summarizing Jira updates, include what the task is, what was changed, and who the assignee is. If there are no Jira updates, just summarize the emails.', str(emails))
-
-            
         return summary
         
     except Exception as e:
+        print('bottom exception')
         print(f"Error: {e}")
-        return None
-    
-    finally:
-        driver.quit()
+        if driver:
+            driver.quit()
+        if emails == []:
+            return None
+        else:
+            summary = gpt_call(email_prompt, str(emails))
+            return summary
+        
 
 def send_email(message, person):
     pass

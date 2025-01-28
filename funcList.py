@@ -65,5 +65,16 @@ funclist = [
                 "required": ["input"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "learn_function",
+            "description": "Used to learn a new function",
+            "parameters": {
+                "type": "object",
+                "properties": {"command": {"type": "string", "description": "The command to run"}}
+            }
+        }
     }
 ]

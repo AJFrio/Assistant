@@ -11,6 +11,7 @@ from tkinter import ttk, scrolledtext
 import pyperclip
 import functions as f
 from funcList import funclist
+from learn import ComputerUseAgent
 
 # Load environment variables from .env file
 load_dotenv()
