@@ -8,6 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import pprint
 from openai import OpenAI
+import win32com.client
 
 #######
 
@@ -151,7 +152,7 @@ def send_message(message, person):
     pg.write(message)
     pg.press('enter')
 
-def read_email():
+def check_email():
     url = 'https://outlook.office365.com/mail/'
     div_class = 'S2NDX Qo35A'
     content_class = 'g_zET'
@@ -214,6 +215,42 @@ def read_email():
             return summary
         
 
-def send_email(message, person):
-    pass
+def send_email(to: list, cc: list, subject: str, message: str):
+    outlook = focus_application('Outlook')
+    left, right, top, bottom, title = outlook
+    width = right - left
+    height = bottom - top
+    time.sleep(0.5)
+    if width > 1243:
+        pg.click(left + 140, top + 155)
+    else:
+        pg.click(left + 130, top + 220)
+    time.sleep(0.5)
+    for person in to:
+        pg.write(person)
+        time.sleep(1)
+        pg.press('enter')
+        time.sleep(0.5)
+    pg.press('tab')
+    time.sleep(0.5)
+    if cc != []:
+        for person in cc:
+            pg.write(person)
+            time.sleep(0.5)
+            pg.press('enter')
+            time.sleep(0.5)
+    pg.press('tab')
+    time.sleep(0.5)
+    pg.write(subject)
+    time.sleep(0.5)
+    pg.press('tab')
+    time.sleep(0.5)
+    pg.write(message)
+    time.sleep(0.5)
+    pg.press('enter')
+    time.sleep(0.5)
+    pg.hotkey('ctrl', 'enter')
+    time.sleep(0.5)
+    pg.press('enter')
 #######
+

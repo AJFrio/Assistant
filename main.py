@@ -39,7 +39,7 @@ systemPrompt = '''
     -Bild PDM
     -Blender
     -Solidworks
-    -Cursor: VS Code based IDE with AI builtin
+    -Cursor: VS Code based IDE with AI built-in
     \n
 
     You will be given a set of tools to use to complete the task. Only use a tool if it is apporpriate for the requested task
@@ -194,12 +194,15 @@ class AssistantGUI:
             elif tool_call.function.name == "open_app":
                 f.focus_application(args['app_name'])
                 self.display_message(f"\nGerald: Opened {args['app_name']}")
-            elif tool_call.function.name == "read_email":
-                emails = f.read_email()
+            elif tool_call.function.name == "check_email":
+                emails = f.check_email()
                 self.display_message(f"\nGerald: {emails}")
             elif tool_call.function.name == "get_info":
                 info = f.get_info(args['input'])
                 self.display_message(f"\nGerald: {info}")
+            elif tool_call.function.name == "send_email":
+                f.send_email(args['people'], args['cc'], args['subject'], args['message'])
+                self.display_message(f"\nGerald: Email sent to {args['people']} with subject {args['subject']}")
         else:
             self.display_message(f"\nGerald: {response.choices[0].message.content}")
 

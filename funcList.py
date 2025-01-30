@@ -40,8 +40,8 @@ funclist = [
     {
         "type": "function",
         "function": {
-            "name": "read_email",
-            "description": "Used to read an email",
+            "name": "check_email",
+            "description": "Used to check most recent emails",
             "parameters": {
                 "type": "object",
                 "properties": {},
@@ -73,7 +73,42 @@ funclist = [
             "description": "Used to learn a new function",
             "parameters": {
                 "type": "object",
-                "properties": {"command": {"type": "string", "description": "The command to run"}}
+                "properties": {
+                    "command": {
+                        "type": "string", 
+                        "description": "The command to run"
+                    }
+                },
+                "required": ["command"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "send_email",
+            "description": "Used to send an email",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "people": {
+                        "type": "string", 
+                        "description": "The people to send the email to"
+                    },
+                    "cc": {
+                        "type": "string",
+                        "description": "The people to CC in the email"
+                    },
+                    "subject": {
+                        "type": "string",
+                        "description": "The subject of the email"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "The message of the email"
+                    }
+                },
+                "required": ["people", "subject", "message"]
             }
         }
     }
