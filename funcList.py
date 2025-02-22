@@ -111,5 +111,17 @@ funclist = [
                 "required": ["people", "subject", "message"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "check_jira",
+            "description": "Used to check for any recent Jira tickets, updates, etc.",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        }
     }
 ]

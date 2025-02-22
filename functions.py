@@ -252,5 +252,15 @@ def send_email(to: list, cc: list, subject: str, message: str):
     pg.hotkey('ctrl', 'enter')
     time.sleep(0.5)
     pg.press('enter')
+
+def check_jira():
+    url = 'https://rep-it.atlassian.net/jira/software/projects/REP/boards/2/backlog?assignee=712020%3A9501c360-46c0-4d7a-9551-66b324dae894'
+    driver = open_browser(url)
+    time.sleep(5)
+    summary = gpt_call('You are a helpful assistant that summarizes Jira tickets. Make sure you have delimiters between each summary. Include and names dates, and times if relevant. When summarizing Jira updates, include what the task is and what was changed.', driver.page_source)
+    driver.quit()
+    return summary
+
+
 #######
 

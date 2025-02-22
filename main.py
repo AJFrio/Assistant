@@ -73,6 +73,8 @@ def getImage():
     return img_str
 
 class AssistantGUI:
+    chat_history = []
+
     def __init__(self, root):
         self.root = root
         self.root.title("Gerald")
@@ -131,6 +133,17 @@ class AssistantGUI:
         )
         send_button.grid(row=1, column=1, sticky=(tk.E))
 
+        # Add Voice Mode checkbox
+        self.voice_mode_var = tk.BooleanVar()
+        voice_mode_checkbox = ttk.Checkbutton(
+            main_frame,
+            text="Voice Mode",
+            variable=self.voice_mode_var,
+            style="Custom.TCheckbutton"
+        )
+        voice_mode_checkbox.grid(row=2, column=0, sticky=(tk.W), pady=(0, 10))
+
+        
         # Configure grid weights
         root.columnconfigure(0, weight=1)
         root.rowconfigure(0, weight=1)
@@ -143,17 +156,37 @@ class AssistantGUI:
         self.display_message("Gerald: Hello")
 
     def display_message(self, message):
-        self.chat_display.insert(tk.END, message + "\n")
+        self.chat_display.insert(tk.END, message + "\n\n")
         self.chat_display.see(tk.END)
 
     def process_input(self):
-        user_input = self.input_field.get()
-        if not user_input:
-            return
+        if self.voice_mode_var.get() and os.system('echo %PROCESSOR_ARCHITECTURE%') != 'ARM64':
+            import speech_recognition as sr
+            # Initialize speech recognizer
+            self.recognizer = sr.Recognizer()
+            self.microphone = sr.Microphone()
 
-        self.display_message(f"You: {user_input}")
-        self.input_field.delete(0, tk.END)
-        
+            # Use speech recognition to get input
+            with self.microphone as source:
+                self.display_message("Gerald: Listening...")
+                audio = self.recognizer.listen(source)
+                try:
+                    user_input = self.recognizer.recognize_google(audio)
+                    self.display_message(f"You (voice): {user_input}")
+                except sr.UnknownValueError:
+                    self.display_message("Gerald: Sorry, I did not understand that.")
+                    return
+                except sr.RequestError:
+                    self.display_message("Gerald: Sorry, there was an error with the speech recognition service.")
+                    return
+        else:
+            # Use text input
+            user_input = self.input_field.get()
+            if not user_input:
+                return
+            self.display_message(f"You: {user_input}")
+            self.input_field.delete(0, tk.END)
+
         self.display_message("Gerald: Generating...")
         self.root.update()
 
@@ -167,12 +200,22 @@ class AssistantGUI:
 
         # Prepare messages
         messages = [
-            {"role": "system", "content": systemPrompt},
-            {"role": "user", "content": user_input if not needs_image else [
+            {"role": "system", "content": systemPrompt}
+        ]
+        
+        # Add chat history
+        messages.extend(self.chat_history)
+        
+        # Add current user message
+        messages.append({
+            "role": "user", 
+            "content": user_input if not needs_image else [
                 {"type": "text", "text": user_input},
                 {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{getImage()}"}}
-            ]}
-        ]
+            ]
+        })
+
+        self.chat_history.append({"role": "user", "content": user_input})
 
         # Process with OpenAI
         response = client.chat.completions.create(
@@ -180,17 +223,18 @@ class AssistantGUI:
             messages=messages,
             tools=tools
         )
-
-        # Remove the "Generating..." message
-        self.chat_display.delete('end-2c linestart', 'end-1c lineend+1c')
         
-        # Process response (rest of the code remains the same)
+        # Remove the "Generating..." message (including the extra newlines)
+        self.chat_display.delete('end-3c linestart', 'end')
+        
+        # Process response
         if not response.choices[0].message.content:
             tool_call = response.choices[0].message.tool_calls[0]
+            self.chat_history.append({"role": "assistant", "content": response.choices[0].message.tool_calls[0].function.name})
             args = json.loads(tool_call.function.arguments)
             if tool_call.function.name == "send_message":
                 f.send_message(args['message'], args['person'])
-                self.display_message(f"\nGerald: Message to {args['person']}: {args['message']}")
+                self.display_message(f"Gerald: Message to {args['person']}: {args['message']}")
             elif tool_call.function.name == "open_app":
                 f.focus_application(args['app_name'])
                 self.display_message(f"\nGerald: Opened {args['app_name']}")
@@ -203,8 +247,13 @@ class AssistantGUI:
             elif tool_call.function.name == "send_email":
                 f.send_email(args['people'], args['cc'], args['subject'], args['message'])
                 self.display_message(f"\nGerald: Email sent to {args['people']} with subject {args['subject']}")
+            elif tool_call.function.name == "check_jira":
+                jira = f.check_jira()
+                self.display_message(f"\nGerald: {jira}")
         else:
-            self.display_message(f"\nGerald: {response.choices[0].message.content}")
+            self.display_message(f"Gerald: {response.choices[0].message.content}")
+            self.chat_history.append({"role": "assistant", "content": response.choices[0].message.content})
+
 
 def main():
     root = tk.Tk()
