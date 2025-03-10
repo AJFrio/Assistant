@@ -8,6 +8,9 @@ This project is a virtual assistant (Gerald) application designed to help comple
 - **Open Applications**: Open specified applications on your computer.
 - **Read Emails**: Read and summarize emails from Outlook.
 - **Get System Information**: Retrieve current date/time and system/connection information.
+- **Access Websites**: Can request info/summaries from websites
+- **Check Jira**: Update the JIRA_URL in your .env file to all tickets filtered by person, and it will let you know whats on the docket
+
 
 ## Setup
 
@@ -40,6 +43,9 @@ This project is a virtual assistant (Gerald) application designed to help comple
      ANTHROPIC_API_KEY=your_anthropic_api_key
      OPENAI_API_KEY=your_openai_api_key
      ```
+     The Jira url isnt required, but allows Gerald to check your Jira tickets
+     ```
+     JIRA_URL='https://example.atlassian.net/jira/software/projects/example/boards/2/backlog?assignee=person'
 
 ## Usage
 

@@ -250,6 +250,13 @@ class AssistantGUI:
             elif tool_call.function.name == "check_jira":
                 jira = f.check_jira()
                 self.display_message(f"\nGerald: {jira}")
+            elif tool_call.function.name == "use_cursor":
+                f.use_cursor(args['prompt'])
+                self.display_message("\nGerald: Cursor request sent")
+            elif tool_call.function.name == "check_website":
+                website = f.check_website(args['url'], args['context'])
+                self.chat_history.append({"role": "assistant", "content": website})
+                self.display_message(f"\nGerald: {website}")
         else:
             self.display_message(f"Gerald: {response.choices[0].message.content}")
             self.chat_history.append({"role": "assistant", "content": response.choices[0].message.content})

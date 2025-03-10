@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 import pprint
 from openai import OpenAI
 import win32com.client
+import requests
 
 #######
 
@@ -254,13 +255,60 @@ def send_email(to: list, cc: list, subject: str, message: str):
     pg.press('enter')
 
 def check_jira():
-    url = 'https://rep-it.atlassian.net/jira/software/projects/REP/boards/2/backlog?assignee=712020%3A9501c360-46c0-4d7a-9551-66b324dae894'
+    url = os.getenv('JIRA_URL')
     driver = open_browser(url)
     time.sleep(5)
     summary = gpt_call('You are a helpful assistant that summarizes Jira tickets. Make sure you have delimiters between each summary. Include and names dates, and times if relevant. When summarizing Jira updates, include what the task is and what was changed.', driver.page_source)
     driver.quit()
     return summary
 
+def check_website(url, context):
+    try:
+        # Initialize the driver with error handling
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')  # Run in headless mode
+        options.add_argument('--disable-gpu')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+        
+        driver = webdriver.Chrome(options=options)
+        
+        # Add timeout for page load
+        driver.set_page_load_timeout(10)
+        
+        try:
+            driver.get(url)
+            
+            # Parse the page source with BeautifulSoup to extract text
+            soup = BeautifulSoup(driver.page_source, 'html.parser')
+            
+            # Remove script and style elements
+            for script in soup(["script", "style"]):
+                script.decompose()
+                
+            # Get text content and clean it up
+            text = soup.get_text()
+            # Remove extra whitespace and empty lines
+            lines = (line.strip() for line in text.splitlines())
+            text = ' '.join(chunk for chunk in lines if chunk)
+            
+            # Encode/decode to handle special characters
+            text = text.encode('ascii', 'ignore').decode('ascii')
+            
+            chat = gpt_call(f'you are used to summarize websites and look for information. Based on the question asked, respond using data from the site: {context}', text)
+            return chat
+        except Exception as e:
+            print(f"Error loading page: {e}")
+            return f"Error accessing website: {str(e)}"
+        finally:
+            # Always close the driver
+            if driver:
+                driver.quit()
+                
+    except Exception as e:
+        print(f"Error initializing WebDriver: {e}")
+        return "Error: Could not initialize web browser"
 
+def use_cursor(prompt):
+    focus_application('Cursor')
 #######
-

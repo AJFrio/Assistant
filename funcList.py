@@ -123,5 +123,43 @@ funclist = [
                 "required": []
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "update_cursor",
+            "description": "Used to interact with Cursor",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "prompt": {
+                        "type": "string",
+                        "description": "The prompt to use"
+                    }
+                },
+                "required": ["prompt"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "check_website",
+            "description": "Used to check a website for information",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "description": "The url to check"
+                    },
+                    "context": {
+                        "type": "string",
+                        "description": "A summary of the question the user asked"
+                    }
+                },
+                "required": ["url", "context"]
+            }
+        }
     }
 ]
