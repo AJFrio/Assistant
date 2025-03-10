@@ -161,5 +161,22 @@ funclist = [
                 "required": ["url", "context"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "run_command",
+            "description": "Used to run a command in the terminal",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "command": {
+                        "type": "string",
+                        "description": "The command to run"
+                    }
+                },
+                "required": ["command"]
+            }
+        }
     }
 ]

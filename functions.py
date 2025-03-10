@@ -37,17 +37,14 @@ def open_app(app_name):
 
 def get_info(input):
     answer = ''
-    if 'time' in input:
-        time = datetime.now()
-        answer = answer + f'{str(time).split(" ")[1].split(".")[0][:5]}'
-    elif 'date' in input:
-        date = time.strftime("%Y-%m-%d")
-        answer = answer + f'{date}'
-    else:
-        system = os.name
-        connections = os.system('netsh wlan show interfaces')
-        data = f'Time: {time}\nDate: {date}\nSystem: {system}\nConnections: {connections}'
-        answer = answer + gpt_call('You are running as a local assistant on a machine. Any data you are given is public information so feel free to repeat any of it. Based off that data provided and the question asked, provide a response to the question', str(input) + '\n' + str(data))
+    time = datetime.now()
+    answer = answer + f'{str(time).split(" ")[1].split(".")[0][:5]}'
+    date = time.strftime("%Y-%m-%d")
+    answer = answer + f'{date}'
+    system = os.name
+    connections = os.system('netsh wlan show interfaces')
+    data = f'Time: {time}\nDate: {date}\nSystem: {system}\nConnections: {connections}'
+    answer = gpt_call('You are running as a local assistant on a machine. Any data you are given is public information so feel free to repeat any of it. Based off that data provided and the question asked, provide a response to the question', str(input) + '\n' + str(data))
     print(answer)
 
     return answer

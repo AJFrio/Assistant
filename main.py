@@ -229,34 +229,35 @@ class AssistantGUI:
         
         # Process response
         if not response.choices[0].message.content:
-            tool_call = response.choices[0].message.tool_calls[0]
-            self.chat_history.append({"role": "assistant", "content": response.choices[0].message.tool_calls[0].function.name})
-            args = json.loads(tool_call.function.arguments)
-            if tool_call.function.name == "send_message":
-                f.send_message(args['message'], args['person'])
-                self.display_message(f"Gerald: Message to {args['person']}: {args['message']}")
-            elif tool_call.function.name == "open_app":
-                f.focus_application(args['app_name'])
-                self.display_message(f"\nGerald: Opened {args['app_name']}")
-            elif tool_call.function.name == "check_email":
-                emails = f.check_email()
-                self.display_message(f"\nGerald: {emails}")
-            elif tool_call.function.name == "get_info":
-                info = f.get_info(args['input'])
-                self.display_message(f"\nGerald: {info}")
-            elif tool_call.function.name == "send_email":
-                f.send_email(args['people'], args['cc'], args['subject'], args['message'])
-                self.display_message(f"\nGerald: Email sent to {args['people']} with subject {args['subject']}")
-            elif tool_call.function.name == "check_jira":
-                jira = f.check_jira()
-                self.display_message(f"\nGerald: {jira}")
-            elif tool_call.function.name == "use_cursor":
-                f.use_cursor(args['prompt'])
-                self.display_message("\nGerald: Cursor request sent")
-            elif tool_call.function.name == "check_website":
-                website = f.check_website(args['url'], args['context'])
-                self.chat_history.append({"role": "assistant", "content": website})
-                self.display_message(f"\nGerald: {website}")
+            # Handle all tool calls
+            for tool_call in response.choices[0].message.tool_calls:
+                self.chat_history.append({"role": "assistant", "content": tool_call.function.name})
+                args = json.loads(tool_call.function.arguments)
+                if tool_call.function.name == "send_message":
+                    f.send_message(args['message'], args['person'])
+                    self.display_message(f"Gerald: Message to {args['person']}: {args['message']}")
+                elif tool_call.function.name == "open_app":
+                    f.focus_application(args['app_name'])
+                    self.display_message(f"\nGerald: Opened {args['app_name']}")
+                elif tool_call.function.name == "check_email":
+                    emails = f.check_email()
+                    self.display_message(f"\nGerald: {emails}")
+                elif tool_call.function.name == "get_info":
+                    info = f.get_info(args['input'])
+                    self.display_message(f"\nGerald: {info}")
+                elif tool_call.function.name == "send_email":
+                    f.send_email(args['people'], args['cc'], args['subject'], args['message'])
+                    self.display_message(f"\nGerald: Email sent to {args['people']} with subject {args['subject']}")
+                elif tool_call.function.name == "check_jira":
+                    jira = f.check_jira()
+                    self.display_message(f"\nGerald: {jira}")
+                elif tool_call.function.name == "use_cursor":
+                    f.use_cursor(args['prompt'])
+                    self.display_message("\nGerald: Cursor request sent")
+                elif tool_call.function.name == "check_website":
+                    website = f.check_website(args['url'], args['context'])
+                    self.chat_history.append({"role": "assistant", "content": website})
+                    self.display_message(f"\nGerald: {website}")
         else:
             self.display_message(f"Gerald: {response.choices[0].message.content}")
             self.chat_history.append({"role": "assistant", "content": response.choices[0].message.content})
