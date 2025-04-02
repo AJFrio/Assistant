@@ -308,4 +308,7 @@ def check_website(url, context):
 
 def use_cursor(prompt):
     focus_application('Cursor')
+
+def check_files(general_file_name: str, general_file_path: str):
+    pass
 #######
