@@ -15,7 +15,10 @@ import requests
 
 def run_command(command):
     """Run a command in the terminal"""
-    os.system(command)
+    focus_application('powershell')
+    time.sleep(3)
+    pg.write(command)
+    pg.press('enter')
 
 def open_browser(url: str, keep_open: bool = False):
     """Open a browser"""

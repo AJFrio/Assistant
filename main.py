@@ -246,6 +246,10 @@ class AssistantGUI:
                 "check_website": lambda args: (
                     self.chat_history.append({"role": "assistant", "content": f.check_website(args['url'], args['context'])}),
                     self.display_message(f"\nCAS: {f.check_website(args['url'], args['context'])}")
+                ),
+                "run_command": lambda args: (
+                    f.run_command(args['command']),
+                    self.display_message(f"\nCAS: Command run: {args['command']}")
                 )
             }
 

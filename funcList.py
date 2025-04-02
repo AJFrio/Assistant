@@ -166,7 +166,7 @@ funclist = [
         "type": "function",
         "function": {
             "name": "run_command",
-            "description": "Used to run a command in the terminal",
+            "description": "Used to run a command in a PowerShell window",
             "parameters": {
                 "type": "object",
                 "properties": {

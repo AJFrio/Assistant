@@ -1,6 +1,6 @@
 # CAS
 
-This project is a virtual assistant (CAS) application designed to use your computer. It includes functionalities such as sending messages, opening applications, reading emails, and more.
+This project is a virtual assistant (Central Automated System, CAS) application designed to use your computer. It includes functionalities such as sending messages, opening applications, reading emails, and more.
 
 ## Features
 
@@ -10,6 +10,7 @@ This project is a virtual assistant (CAS) application designed to use your compu
 - **Get System Information**: Retrieve current date/time and system/connection information.
 - **Access Websites**: Can request info/summaries from websites
 - **Check Jira**: Update the JIRA_URL in your .env file to all tickets filtered by person, and it will let you know whats on the docket
+- **Browse Website**: Can take in full URL's to add context to a question, request, etc
 
 
 ## Setup
