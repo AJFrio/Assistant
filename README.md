@@ -1,6 +1,6 @@
-# GERALD
+# CAS
 
-This project is a virtual assistant (Gerald) application designed to help complete work tasks. It includes functionalities such as sending messages, opening applications, reading emails, and more.
+This project is a virtual assistant (CAS) application designed to use your computer. It includes functionalities such as sending messages, opening applications, reading emails, and more.
 
 ## Features
 
