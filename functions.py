@@ -320,14 +320,6 @@ def use_cursor(prompt):
     time.sleep(.3)
     pg.press('enter')
 
-def status_on():
-    fb = Firebase()
-    fb.update_status("on")
-
-def status_off():
-    fb = Firebase()
-    fb.update_status("off")
-
 def check_files(general_file_name: str, general_file_path: str):
     pass
 #######
