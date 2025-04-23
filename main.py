@@ -260,6 +260,10 @@ class AssistantGUI:
                 "run_command": lambda args: (
                     f.run_command(args['command']),
                     self.display_message(f"\n{name}: Command run: {args['command']}")
+                ),
+                'add_task_to_computer': lambda args: (
+                    fb.add_task_to_computer(args['target_computer'], args['task_type'], args['task_params']),
+                    self.display_message(f"\n{name}: Task added to {args['target_computer']}")
                 )
             }
 
