@@ -22,6 +22,40 @@ client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 name = "CAS-E"
 id = "(Central Automated System - Epic)"
 fb = Firebase()  # Create an instance of the Firebase class
+fb.update_status("on")
+computers = fb.get_all_computers()
+
+# Define task handlers for Firebase polling
+def handle_command_task(task_id, task_data):
+    """Handle a command execution task"""
+    print(f"Executing command: {task_data}")
+    command = task_data.get('params', {}).get('command')
+    if command:
+        result = f.run_command(command)
+        return {"command_result": result}
+    return {"error": "No command provided"}
+
+def handle_open_app_task(task_id, task_data):
+    """Handle an open app task"""
+    print(f"Opening app: {task_data}")
+    app_name = task_data.get('params', {}).get('app_name')
+    if app_name:
+        result = f.focus_application(app_name)
+        return {"app_opened": app_name}
+    return {"error": "No app name provided"}
+
+def handle_default_task(task_id, task_data):
+    """Default handler for unrecognized tasks"""
+    print(f"Received unhandled task type: {task_data.get('type')}")
+    print(f"Task data: {task_data}")
+    return {"status": "acknowledged"}
+
+# Register task handlers
+fb.register_task_handler("command", handle_command_task)
+fb.register_task_handler("open_app", handle_open_app_task)
+
+# Start task polling in the background
+fb.start_task_polling(interval=30, default_handler=handle_default_task)
 
 systemPrompt = f'''
     You are virtual assistant called {name} {id} developed by AJ Frio.
@@ -37,6 +71,8 @@ systemPrompt = f'''
     - use_cursor
     \n
     Keep all responses short and direct.
+    If the user asks for a task that is required to be completed by another computer, use the add_task_to_computer tool.
+    Here are the availabe computers: {computers}
 '''
 
 greetings = [
@@ -151,7 +187,6 @@ class AssistantGUI:
 
         #Start it :)
         self.display_message(random.choice(greetings))
-        fb.update_status("on")
 
     def display_message(self, message):
         self.chat_display.insert(tk.END, message + "\n\n")
@@ -285,6 +320,9 @@ def main():
     root = tk.Tk()
     app = AssistantGUI(root)
     root.mainloop()
+    # Stop polling and update status when the application exits
+    fb.stop_task_polling()
     fb.update_status("off")
+
 if __name__ == "__main__":
     main()

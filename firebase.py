@@ -3,6 +3,8 @@ import json
 import socket
 import os
 import dotenv
+import time
+import threading
 
 class Firebase:
     def __init__(self, load_env=True, verify_ssl=False):
@@ -27,6 +29,11 @@ class Firebase:
             self.computer_name = socket.gethostname()
             self.base_url = f"https://{self.project_id}-default-rtdb.firebaseio.com"
             self.verify_ssl = verify_ssl
+            
+            # For task polling
+            self._polling_thread = None
+            self._polling_active = False
+            self._task_handlers = {}
             
             # Update descriptor if available
             if self.descriptor:
@@ -183,6 +190,28 @@ class Firebase:
             print(f"Error getting status: {response.status_code}")
             print(response.text)
             return None
+    
+    def get_all_computers(self):
+        """
+        Get the names of all computers in the database
+        
+        Returns:
+            list: List of computer names or empty list if none found
+        """
+        url = f"{self.base_url}/devices.json"
+        params = {"auth": self.api_key, "shallow": "true"}
+        
+        response = requests.get(url, params=params, verify=self.verify_ssl)
+        
+        if response.status_code == 200:
+            devices = response.json()
+            if devices:
+                return list(devices.keys())
+            return []
+        else:
+            print(f"Error getting computers: {response.status_code}")
+            print(response.text)
+            return []
             
     def _update_descriptor(self):
         """
@@ -213,4 +242,186 @@ class Firebase:
             print(f"Error updating descriptor: {response.status_code}")
             print(response.text)
 
+    def start_task_polling(self, interval=30, default_handler=None):
+        """
+        Start polling for tasks in a background thread
+        
+        Args:
+            interval (int): Polling interval in seconds
+            default_handler (callable): Default handler for tasks without specific handlers
+                                       Function should accept (task_id, task_data) parameters
+                                       
+        Returns:
+            bool: True if polling started, False if already running
+        """
+        if self._polling_active:
+            print("Task polling is already active")
+            return False
+        
+        self._polling_active = True
+        self._default_handler = default_handler
+        
+        # Create and start the polling thread
+        self._polling_thread = threading.Thread(
+            target=self._poll_tasks_worker,
+            args=(interval,),
+            daemon=True
+        )
+        self._polling_thread.start()
+        print(f"Started task polling with {interval}s interval")
+        return True
+    
+    def stop_task_polling(self):
+        """
+        Stop the task polling thread
+        
+        Returns:
+            bool: True if polling was stopped, False if not running
+        """
+        if not self._polling_active:
+            print("Task polling is not active")
+            return False
+        
+        self._polling_active = False
+        if self._polling_thread and self._polling_thread.is_alive():
+            self._polling_thread.join(timeout=1.0)
+        
+        print("Stopped task polling")
+        return True
+    
+    def register_task_handler(self, task_type, handler_function):
+        """
+        Register a handler function for a specific task type
+        
+        Args:
+            task_type (str): The type of task to handle
+            handler_function (callable): Function to call when task is received
+                                         Function should accept (task_id, task_data) parameters
+        """
+        self._task_handlers[task_type] = handler_function
+        print(f"Registered handler for '{task_type}' tasks")
+    
+    def _poll_tasks_worker(self, interval):
+        """
+        Worker thread function that polls for tasks
+        
+        Args:
+            interval (int): Polling interval in seconds
+        """
+        while self._polling_active:
+            try:
+                tasks = self.get_tasks()
+                if tasks and isinstance(tasks, dict):
+                    for task_id, task_data in tasks.items():
+                        self._handle_task(task_id, task_data)
+            except Exception as e:
+                print(f"Error in task polling: {e}")
+            
+            # Sleep for the interval
+            time_slept = 0
+            while time_slept < interval and self._polling_active:
+                time.sleep(1)
+                time_slept += 1
+    
+    def _handle_task(self, task_id, task_data):
+        """
+        Process a task with the appropriate handler
+        
+        Args:
+            task_id (str): ID of the task
+            task_data (dict): Task data
+        """
+        try:
+            task_type = task_data.get('type')
+            if not task_type:
+                print(f"Warning: Task {task_id} has no type, skipping")
+                return
+            
+            # Find the appropriate handler
+            handler = self._task_handlers.get(task_type)
+            
+            if handler:
+                # Call the task-specific handler
+                result = handler(task_id, task_data)
+                # Complete the task if the handler returned a result
+                if result is not None:
+                    self.complete_task(task_id, result)
+            elif self._default_handler:
+                # Call the default handler
+                result = self._default_handler(task_id, task_data)
+                # Complete the task if the handler returned a result
+                if result is not None:
+                    self.complete_task(task_id, result)
+            else:
+                print(f"No handler registered for task type '{task_type}' and no default handler")
+        except Exception as e:
+            print(f"Error handling task {task_id}: {e}")
+
 # Example usage when run directly
+if __name__ == "__main__":
+    import sys
+    
+    # Example task handlers
+    def handle_echo_task(task_id, task_data):
+        print(f"Echo task received: {task_data}")
+        message = task_data.get('params', {}).get('message', 'No message')
+        print(f"Message: {message}")
+        return {"echoed": message}
+    
+    def handle_default_task(task_id, task_data):
+        print(f"Default handler processing task: {task_id}")
+        print(f"Task data: {task_data}")
+        return {"status": "processed by default handler"}
+    
+    # Initialize Firebase client
+    firebase = Firebase()
+    
+    # Register task handlers
+    firebase.register_task_handler("echo", handle_echo_task)
+    
+    # Usage example
+    if len(sys.argv) > 1:
+        command = sys.argv[1]
+        
+        if command == "poll":
+            # Start polling for tasks
+            firebase.update_status("on")  # Set status to online
+            firebase.start_task_polling(interval=10, default_handler=handle_default_task)
+            
+            try:
+                print("Polling for tasks. Press Ctrl+C to stop.")
+                # Keep the main thread alive
+                while True:
+                    time.sleep(1)
+            except KeyboardInterrupt:
+                print("Stopping...")
+            finally:
+                firebase.stop_task_polling()
+                firebase.update_status("off")  # Set status to offline
+                
+        elif command == "add-task":
+            # Add a task to another computer
+            target = sys.argv[2] if len(sys.argv) > 2 else firebase.computer_name
+            message = sys.argv[3] if len(sys.argv) > 3 else "Hello from Firebase!"
+            
+            firebase.add_task_to_computer(
+                target_computer=target,
+                task_type="echo",
+                task_params={"message": message}
+            )
+            print(f"Added echo task to {target}")
+            
+        elif command == "status":
+            # Update status
+            status = sys.argv[2] if len(sys.argv) > 2 else "on"
+            firebase.update_status(status)
+            print(f"Updated status to {status}")
+            
+        else:
+            print(f"Unknown command: {command}")
+            print("Available commands: poll, add-task, status")
+    else:
+        print("Usage:")
+        print("  python firebase.py poll - Start polling for tasks")
+        print("  python firebase.py add-task [computer_name] [message] - Add an echo task")
+        print("  python firebase.py status [on|off] - Update computer status")
