@@ -76,7 +76,7 @@ fb.register_task_handler("command", handle_command_task)
 fb.register_task_handler("open_app", handle_open_app_task)
 
 # Start task polling in the background
-fb.start_task_polling(interval=30, default_handler=handle_default_task)
+fb.start_task_polling(interval=300, default_handler=handle_default_task)
 
 systemPrompt = f'''
     You are virtual assistant called {name} {id} developed by AJ Frio.
