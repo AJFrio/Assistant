@@ -29,7 +29,17 @@ computers = fb.get_all_computers()
 def handle_command_task(task_id, task_data):
     """Handle a command execution task"""
     print(f"Executing command: {task_data}")
-    command = task_data.get('params', {}).get('command')
+    params = task_data.get('params')
+    
+    # Handle both string params and dictionary params
+    if isinstance(params, dict):
+        command = params.get('command')
+    elif isinstance(params, str):
+        # If params is directly a string, use it as the command
+        command = params
+    else:
+        command = None
+        
     if command:
         result = f.run_command(command)
         return {"command_result": result}
@@ -38,7 +48,17 @@ def handle_command_task(task_id, task_data):
 def handle_open_app_task(task_id, task_data):
     """Handle an open app task"""
     print(f"Opening app: {task_data}")
-    app_name = task_data.get('params', {}).get('app_name')
+    params = task_data.get('params')
+    
+    # Handle both string params and dictionary params
+    if isinstance(params, dict):
+        app_name = params.get('app_name')
+    elif isinstance(params, str):
+        # If params is directly a string, use it as the app name
+        app_name = params
+    else:
+        app_name = None
+        
     if app_name:
         result = f.focus_application(app_name)
         return {"app_opened": app_name}
@@ -46,9 +66,10 @@ def handle_open_app_task(task_id, task_data):
 
 def handle_default_task(task_id, task_data):
     """Default handler for unrecognized tasks"""
-    print(f"Received unhandled task type: {task_data.get('type')}")
+    task_type = task_data.get('type', 'unknown')
+    print(f"Received unhandled task type: {task_type}")
     print(f"Task data: {task_data}")
-    return {"status": "acknowledged"}
+    return {"status": "acknowledged", "task_id": task_id}
 
 # Register task handlers
 fb.register_task_handler("command", handle_command_task)

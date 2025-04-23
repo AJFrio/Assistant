@@ -5,6 +5,7 @@ import os
 import dotenv
 import time
 import threading
+import functions as f
 
 class Firebase:
     def __init__(self, load_env=True, verify_ssl=False):
