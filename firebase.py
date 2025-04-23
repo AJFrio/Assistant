@@ -16,11 +16,19 @@ class Firebase:
         if load_env:
             dotenv.load_dotenv()
             
-        self.project_id = os.getenv("FIREBASE_PROJECT_ID")
-        self.api_key = os.getenv("FIREBASE_API_KEY")
-        self.computer_name = socket.gethostname()
-        self.base_url = f"https://{self.project_id}-default-rtdb.firebaseio.com"
-        self.verify_ssl = verify_ssl
+        try:
+            self.project_id = os.getenv("FIREBASE_PROJECT_ID")
+            self.api_key = os.getenv("FIREBASE_API_KEY")
+            
+            if not self.project_id or not self.api_key:
+                raise ValueError("Missing required environment variables: FIREBASE_PROJECT_ID or FIREBASE_API_KEY")
+                
+            self.computer_name = socket.gethostname()
+            self.base_url = f"https://{self.project_id}-default-rtdb.firebaseio.com"
+            self.verify_ssl = verify_ssl
+        except Exception as e:
+            print(f"Error initializing Firebase: {e}")
+            raise
         
     def update_status(self, status="on"):
         """
