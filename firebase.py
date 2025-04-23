@@ -242,7 +242,7 @@ class Firebase:
             print(f"Error updating descriptor: {response.status_code}")
             print(response.text)
 
-    def start_task_polling(self, interval=30, default_handler=None):
+    def start_task_polling(self, interval=60, default_handler=None):
         """
         Start polling for tasks in a background thread
         
