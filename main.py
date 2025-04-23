@@ -151,6 +151,7 @@ class AssistantGUI:
 
         #Start it :)
         self.display_message(random.choice(greetings))
+        fb.update_status("on")
 
     def display_message(self, message):
         self.chat_display.insert(tk.END, message + "\n\n")
@@ -284,6 +285,6 @@ def main():
     root = tk.Tk()
     app = AssistantGUI(root)
     root.mainloop()
-
+    fb.update_status("off")
 if __name__ == "__main__":
     main()
