@@ -10,8 +10,10 @@ import pprint
 from openai import OpenAI
 import win32com.client
 import requests
+from firebase import Firebase
 
 #######
+fb = Firebase()
 
 def run_command(command):
     """Run a command in the terminal"""
@@ -311,6 +313,20 @@ def check_website(url, context):
 
 def use_cursor(prompt):
     focus_application('Cursor')
+    time.sleep(.5)
+    pg.hotkey('ctrl', 'l')
+    time.sleep(.4)
+    pg.write(prompt)
+    time.sleep(.3)
+    pg.press('enter')
+
+def status_on():
+    fb = Firebase()
+    fb.update_status("on")
+
+def status_off():
+    fb = Firebase()
+    fb.update_status("off")
 
 def check_files(general_file_name: str, general_file_path: str):
     pass

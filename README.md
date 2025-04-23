@@ -1,17 +1,19 @@
-# CAS
+# CAS-E
 
-This project is a virtual assistant (Central Automated System, CAS) application designed to use your computer. It includes functionalities such as sending messages, opening applications, reading emails, and more.
+This project is a virtual assistant (Central Automated System, CAS-E) application designed to use your computer. It includes functionalities such as sending messages, opening applications, reading emails, and more.
 
 ## Features
 
-- **Send Messages**: Send messages using Teams.
-- **Open Applications**: Open specified applications on your computer.
-- **Read Emails**: Read and summarize emails from Outlook.
-- **Get System Information**: Retrieve current date/time and system/connection information.
-- **Access Websites**: Can request info/summaries from websites
-- **Check Jira**: Update the JIRA_URL in your .env file to all tickets filtered by person, and it will let you know whats on the docket
-- **Browse Website**: Can take in full URL's to add context to a question, request, etc
-
+- **Send Messages**: Send messages using Teams (`send_message`).
+- **Open Applications**: Open specified applications on your computer (`open_app`).
+- **Check Email**: Read and summarize the most recent emails from Outlook (`check_email`).
+- **Send Email**: Send emails via Outlook (`send_email`).
+- **Get System Information**: Retrieve current date/time and system/connection information (`get_info`).
+- **Check Website**: Request info/summaries from websites by providing a URL and context (`check_website`).
+- **Check Jira**: Check for recent Jira tickets assigned to you (requires `JIRA_URL` in `.env`) (`check_jira`).
+- **Interact with Cursor**: Send prompts to the Cursor IDE (`use_cursor`).
+- **Run PowerShell Command**: Execute a specified command in a PowerShell window (`run_command`).
+- **Learn Function**: *[Experimental]* Attempts to learn a new function based on a command (`learn_function`).
 
 ## Setup
 

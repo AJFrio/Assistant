@@ -13,22 +13,30 @@ import functions as f
 from funcList import funclist
 from learn import ComputerUseAgent
 import random
+from firebase import Firebase
 
 # Load environment variables from .env file
 load_dotenv()
-
 tools = funclist
-
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+name = "CAS-E"
+id = "(Central Automated System - Epic)"
+fb = Firebase()  # Create an instance of the Firebase class
 
-systemPrompt = '''
-    You are virtual assistant called CAS (Central Automated System) developed by AJ Frio.
+systemPrompt = f'''
+    You are virtual assistant called {name} {id} developed by AJ Frio.
     \n
     You will be given a set of tools to use to complete the task. Only use a tool if it is apporpriate for the requested task. If required, you will also be given an image for context.
+    If callinng any of the following tools, only call one, never stack these tools: 
+    - send_message
+    - open_app
+    - check_email
+    - get_info
+    - send_email
+    - check_jira
+    - use_cursor
     \n
     Keep all responses short and direct.
-    \n
-    Respond only with the proper response for the situation.
 '''
 
 greetings = [
@@ -36,6 +44,7 @@ greetings = [
     "Hi AJ",
     "Welcome back AJ",
     "How can I help you today AJ",
+    "Meoooooowwww"
 ]
 
 def typeText(text):
@@ -64,8 +73,8 @@ class AssistantGUI:
 
     def __init__(self, root):
         self.root = root
-        self.root.title("CAS")
-        self.root.geometry("600x400")
+        self.root.title(id)
+        self.root.geometry("1000x600")
         
         # Configure dark theme colors
         self.root.configure(bg='#1a1a1a')  # Dark background
@@ -140,6 +149,7 @@ class AssistantGUI:
         # Bind enter key to process_input
         self.input_field.bind("<Return>", lambda e: self.process_input())
 
+        #Start it :)
         self.display_message(random.choice(greetings))
 
     def display_message(self, message):
@@ -155,16 +165,16 @@ class AssistantGUI:
 
             # Use speech recognition to get input
             with self.microphone as source:
-                self.display_message("CAS: Listening...")
+                self.display_message(f"{name}: Listening...")
                 audio = self.recognizer.listen(source)
                 try:
                     user_input = self.recognizer.recognize_google(audio)
                     self.display_message(f"You (voice): {user_input}")
                 except sr.UnknownValueError:
-                    self.display_message("CAS: Sorry, I did not understand that.")
+                    self.display_message(f"{name}: Sorry, I did not understand that.")
                     return
                 except sr.RequestError:
-                    self.display_message("CAS: Sorry, there was an error with the speech recognition service.")
+                    self.display_message(f"{name}: Sorry, there was an error with the speech recognition service.")
                     return
         else:
             # Use text input
@@ -174,7 +184,7 @@ class AssistantGUI:
             self.display_message(f"You: {user_input}")
             self.input_field.delete(0, tk.END)
 
-        self.display_message("CAS: Generating...")
+        self.display_message(f"{name}: Generating...")
         self.root.update()
 
         # Check if image is needed based on keywords
@@ -220,36 +230,36 @@ class AssistantGUI:
             tool_handlers = {
                 "send_message": lambda args: (
                     f.send_message(args['message'], args['person']),
-                    self.display_message(f"CAS: Message to {args['person']}: {args['message']}")
+                    self.display_message(f"{name}: Message to {args['person']}: {args['message']}")
                 ),
                 "open_app": lambda args: (
                     f.focus_application(args['app_name']),
-                    self.display_message(f"\nCAS: Opened {args['app_name']}")
+                    self.display_message(f"\n{name}: Opened {args['app_name']}")
                 ),
                 "check_email": lambda args: (
-                    self.display_message(f"\nCAS: {f.check_email()}")
+                    self.display_message(f"\n{name}: {f.check_email()}")
                 ),
                 "get_info": lambda args: (
-                    self.display_message(f"\nCAS: {f.get_info(args['input'])}")
+                    self.display_message(f"\n{name}: {f.get_info(args['input'])}")
                 ),
                 "send_email": lambda args: (
                     f.send_email(args['people'], args['cc'], args['subject'], args['message']),
-                    self.display_message(f"\nCAS: Email sent to {args['people']} with subject {args['subject']}")
+                    self.display_message(f"\n{name}: Email sent to {args['people']} with subject {args['subject']}")
                 ),
                 "check_jira": lambda args: (
-                    self.display_message(f"\nCAS: {f.check_jira()}")
+                    self.display_message(f"\n{name}: {f.check_jira()}")
                 ),
                 "use_cursor": lambda args: (
                     f.use_cursor(args['prompt']),
-                    self.display_message("\nCAS: Cursor request sent")
+                    self.display_message(f"\n{name}: Cursor request sent")
                 ),
                 "check_website": lambda args: (
                     self.chat_history.append({"role": "assistant", "content": f.check_website(args['url'], args['context'])}),
-                    self.display_message(f"\nCAS: {f.check_website(args['url'], args['context'])}")
+                    self.display_message(f"\n{name}: {f.check_website(args['url'], args['context'])}")
                 ),
                 "run_command": lambda args: (
                     f.run_command(args['command']),
-                    self.display_message(f"\nCAS: Command run: {args['command']}")
+                    self.display_message(f"\n{name}: Command run: {args['command']}")
                 )
             }
 
@@ -262,7 +272,7 @@ class AssistantGUI:
                 if tool_call.function.name in tool_handlers:
                     tool_handlers[tool_call.function.name](args)
         else:
-            self.display_message(f"CAS: {response.choices[0].message.content}")
+            self.display_message(f"\n{name}: {response.choices[0].message.content}")
             self.chat_history.append({"role": "assistant", "content": response.choices[0].message.content})
 
 

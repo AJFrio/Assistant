@@ -127,14 +127,14 @@ funclist = [
     {
         "type": "function",
         "function": {
-            "name": "update_cursor",
+            "name": "use_cursor",
             "description": "Used to interact with Cursor",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "prompt": {
                         "type": "string",
-                        "description": "The prompt to use"
+                        "description": "The prompt to pass to cursor"
                     }
                 },
                 "required": ["prompt"]
@@ -176,6 +176,31 @@ funclist = [
                     }
                 },
                 "required": ["command"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "add_task_to_computer",
+            "description": "Used to add a function to the queue of another computer",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "target_computer": {
+                        "type": "string",
+                        "description": "The name of the computer to add the task to"
+                    },
+                    "task_type": {
+                        "type": "string",
+                        "description": "The type of task to add"
+                    },
+                    "task_params": {
+                        "type": "string",
+                        "description": "The parameters for the task"
+                    }
+                },
+                "required": ["target_computer", "task_type", "task_params"]
             }
         }
     }
